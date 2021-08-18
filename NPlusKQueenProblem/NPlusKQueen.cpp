@@ -73,6 +73,29 @@ void findSolutions(vector<Solution>& solution, int boardSize, int pawnCount, vec
         s.pawns = p;
         solution.push_back(s);
       }
+      if (y > 0 && y < boardSize - 1 && pawns.size() < pawnCount)
+      {
+        for (int pi = i + 1; pi < boardSize - 1; ++pi)
+        {
+          if (!columns[pi])
+          {
+            int nspi = nsDiagIndex(pi, y, boardSize);
+            int pspi = psDiagIndex(pi, y, boardSize);
+            bool oldNspd = nsDiag[nspi];
+            bool oldPspd = psDiag[pspi];
+            columns[pi] = true;
+            nsDiag[nspi] = true;
+            psDiag[pspi] = true;
+            pair<int, int> pPos(y, pi);
+            pawns.push_back(pPos);
+            findSolutions(solution, boardSize, pawnCount, queens, pawns, pi + 1, y, columns, psDiag, nsDiag);
+            columns[pi] = false;
+            nsDiag[nspi] = oldNspd;
+            psDiag[pspi] = oldPspd;
+            pawns.pop_back();
+          }
+        }
+      }
       findSolutions(solution, boardSize, pawnCount, queens, pawns, 0, y + 1, columns, psDiag, nsDiag);
       columns[i] = true;
       nsDiag[nsi] = true;
