@@ -2,6 +2,7 @@
 //
 
 #include "NPlusKQueenProblem.h"
+#include "NPlusKQueen.h"
 
 using namespace std;
 
@@ -35,6 +36,25 @@ int main()
 	cout << endl;
 
 	cout << "Looking for solutions to put " << (boardSize + pawns) << " queens in a " << boardSize << "x" << boardSize << " board with " << pawns << " pawns..." << endl;
+
+	vector<Solution> solutions = findSolutions(boardSize, pawns);
+	cout << solutions.size() << " solutions" << endl;
+	for (auto s : solutions)
+	{
+		cout << "---" << endl;
+		cout << "queens:" << endl;
+		for (auto q : s.queens)
+		{
+			cout << "(" << q.first << "," << q.second << ") ";
+		}
+		cout << endl;
+		cout << "pawns:" << endl;
+		for (auto p : s.pawns)
+		{
+			cout << "(" << p.first << "," << p.second << ") ";
+		}
+		cout << endl;
+	}
 
 	return 0;
 }
