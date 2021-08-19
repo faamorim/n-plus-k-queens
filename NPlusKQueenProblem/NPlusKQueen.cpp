@@ -25,6 +25,14 @@ vector<vector<char>> Solution::getBoard()
   return _solution;
 }
 
+#define nsDiagIndex(x, y, b) (x + b - y - 1)
+#define psDiagIndex(x, y, b) (x + y)
+
+bool isBetween(pair<int, int>& p, pair<int, int>& q1, pair<int, int>& q2)
+{
+  return ((p.first >= q1.first && p.first <= q2.first) || (p.first <= q1.first && p.first >= q2.first)) && ((p.second >= q1.second && p.second <= q2.second) || (p.second <= q1.second && p.second >= q2.second));
+}
+
 bool checkSolution(Solution& solution, int boardSize, int pawns)
 {
   if (solution.boardSize != boardSize)
@@ -40,13 +48,119 @@ bool checkSolution(Solution& solution, int boardSize, int pawns)
     return false;
   }
 
-  //Add real solution check
+  for (int i = 0; i < boardSize + pawns; ++i)
+  {
+    auto q1 = solution.queens[i];
+    for (int j = i + 1; j < boardSize + pawns; ++j)
+    {
+      auto q2 = solution.queens[j];
+      if (q1.first == q2.first && q1.second == q2.second)
+      {
+        return false;
+      }
+    }
+    for (int k = 0; k < pawns; ++k)
+    {
+      auto p = solution.pawns[k];
+      if (q1.first == p.first && q1.second == p.second)
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int i = 0; i < boardSize + pawns; ++i)
+  {
+    auto q1 = solution.queens[i];
+    auto q1nsi = nsDiagIndex(q1.second, q1.first, boardSize);
+    auto q1psi = psDiagIndex(q1.second, q1.first, boardSize);
+
+    for (int j = i + 1; j < boardSize + pawns; ++j)
+    {
+      auto q2 = solution.queens[j];
+      auto q2nsi = nsDiagIndex(q2.second, q2.first, boardSize);
+      auto q2psi = psDiagIndex(q2.second, q2.first, boardSize);
+      if (q1.first == q2.first)
+      {
+        bool safe = false;
+        for (auto p : solution.pawns)
+        {
+          if (p.first == q1.first)
+          {
+            if (isBetween(p, q1, q2))
+            {
+              safe = true;
+              break;
+            }
+          }
+        }
+        if (!safe)
+        {
+          return false;
+        }
+      }
+      if (q1.second == q2.second)
+      {
+        bool safe = false;
+        for (auto p : solution.pawns)
+        {
+          if (p.second == q1.second)
+          {
+            if (isBetween(p, q1, q2))
+            {
+              safe = true;
+              break;
+            }
+          }
+        }
+        if (!safe)
+        {
+          return false;
+        }
+      }
+      if (q1nsi == q2nsi)
+      {
+        bool safe = false;
+        for (auto p : solution.pawns)
+        {
+          if (nsDiagIndex(p.second, p.first, boardSize) == q1nsi)
+          {
+            if (isBetween(p, q1, q2))
+            {
+              safe = true;
+              break;
+            }
+          }
+        }
+        if (!safe)
+        {
+          return false;
+        }
+      }
+      if (q1psi == q2psi)
+      {
+        bool safe = false;
+        for (auto p : solution.pawns)
+        {
+          if (psDiagIndex(p.second, p.first, boardSize) == q1psi)
+          {
+            if (isBetween(p, q1, q2))
+            {
+              safe = true;
+              break;
+            }
+          }
+        }
+        if (!safe)
+        {
+          return false;
+        }
+      }
+    }
+  }
 
   return true;
 }
-
-#define nsDiagIndex(x, y, b) (x + b - y - 1)
-#define psDiagIndex(x, y, b) (x + y)
 
 void findSolutions(vector<Solution>& solution, int boardSize, int pawnCount, vector<pair<int, int>>& queens, vector<pair<int, int>>& pawns, int x, int y, vector<bool>& columns, vector<bool>& psDiag, vector<bool>& nsDiag);
 

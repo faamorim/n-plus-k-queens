@@ -50,23 +50,19 @@ int main()
 		clock_t tStart = clock();
 		vector<Solution> solutions = findSolutions(boardSize, pawns);
 		cout << solutions.size() << " solutions found in " << setprecision(3) << ((double)(clock() - tStart)/CLOCKS_PER_SEC) << " seconds." << endl;
-		//for (auto s : solutions)
-		//{
-		//	cout << "---" << endl;
-		//	cout << "queens:" << endl;
-		//	for (auto q : s.queens)
-		//	{
-		//		cout << "(" << q.first << "," << q.second << ") ";
-		//	}
-		//	cout << endl;
-		//	cout << "pawns:" << endl;
-		//	for (auto p : s.pawns)
-		//	{
-		//		cout << "(" << p.first << "," << p.second << ") ";
-		//	}
-		//	cout << endl;
-		//}
 
+		int wrong = 0;
+
+		tStart = clock();
+		for (auto s : solutions)
+		{
+			if (!checkSolution(s, boardSize, pawns))
+			{
+				++wrong;
+			}
+		}
+		cout << "All solutions checked in " << setprecision(3) << ((double)(clock() - tStart) / CLOCKS_PER_SEC) << " seconds: " <<  wrong << " wrong solutions." << endl << endl;
 	}
+
 	return 0;
 }
